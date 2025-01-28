@@ -1,0 +1,22 @@
+<!-- templates/shared/header.html -->
+<header class="bg-gray-800 text-white shadow-md sticky top-0 z-50">
+  <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <!-- Logo -->
+    <a href="/" class="text-2xl font-bold">
+      <img src="/images/logo.png" alt="School Management" class="h-10">
+    </a>
+
+    <!-- Navigation Links -->
+    <div class="flex space-x-6">
+      <a href="/students" class="hover:text-blue-500">Students</a>
+      <a href="/professors" class="hover:text-blue-500">Professors</a>
+      <a href="/modules" class="hover:text-blue-500">Modules</a>
+      <a href="/enrollments" class="hover:text-blue-500">Enrollments</a>
+    </div>
+
+    <!-- Dark/Light Mode Toggle -->
+    <button id="theme-toggle" class="hover:text-blue-500">
+      <i class="fas fa-moon"></i> <!-- Font Awesome moon icon -->
+    </button>
+  </nav>
+</header>
