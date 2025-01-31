@@ -160,14 +160,13 @@ public class ModuleServiceImpl implements ModuleService {
                     .orElseThrow(() -> new EntityNotFoundException("Module not found with id: " + moduleId));
 
             return module.getEnrollments().stream()
-                    .map(enrollment -> new StudentDTO(
-                            enrollment.getStudent().getId(),
-                            enrollment.getStudent().getStudentNumber(),
-                            enrollment.getStudent().getFirstName(),
-                            enrollment.getStudent().getLastName(),
-                            enrollment.getStudent().getEmail(),
-                            null, null, null
-                    ))
+                    .map(enrollment ->StudentDTO.builder().
+                            id(enrollment.getStudent().getId()).
+                            studentNumber(enrollment.getStudent().getStudentNumber())
+                            .email(enrollment.getStudent().getEmail())
+                            .firstName(enrollment.getStudent().getFirstName())
+                            .lastName(enrollment.getStudent().getLastName()).build()
+                    )
                     .collect(Collectors.toList());
         } catch (EntityNotFoundException ex) {
             log.error("Module not found: {}", ex.getMessage());

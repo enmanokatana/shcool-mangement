@@ -2,70 +2,117 @@ package org.example.scool.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.scool.dtos.DashboardStatsDTO;
-import org.example.scool.dtos.ModulePopularityDTO;
-import org.example.scool.dtos.StudentPerformanceDTO;
 import org.example.scool.models.Enrollment;
-import org.example.scool.models.Module;
-import org.example.scool.models.Student;
 import org.example.scool.repositories.EnrollmentRepository;
 import org.example.scool.repositories.ModuleRepository;
 import org.example.scool.repositories.ProfessorRepository;
 import org.example.scool.repositories.StudentRepository;
 import org.example.scool.services.DashboardService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Concrete implementation of DashboardService.
+ * Fetches and aggregates data for the dashboard.
+ */
 @Service
-@Slf4j
 @RequiredArgsConstructor
+@Slf4j
 public class DashboardServiceImpl implements DashboardService {
+
     private final StudentRepository studentRepository;
     private final ProfessorRepository professorRepository;
     private final ModuleRepository moduleRepository;
     private final EnrollmentRepository enrollmentRepository;
 
     @Override
-    public DashboardStatsDTO getDashboardStatistics() {
-        long totalStudents = studentRepository.count();
-        long totalProfessors = professorRepository.count();
-        long totalModules = moduleRepository.count();
-        long totalActiveEnrollments = enrollmentRepository.countByStatus(Enrollment.EnrollmentStatus.ACTIVE);
-
-        return new DashboardStatsDTO(totalStudents, totalProfessors, totalModules, totalActiveEnrollments);
+    public long getTotalStudents() {
+        long count = studentRepository.count();
+        log.info("Total students: {}", count);
+        return count;
     }
 
     @Override
-    public List<ModulePopularityDTO> getModulePopularityReport() {
-        List<Module> modules = moduleRepository.findAll();
-        return modules.stream()
-                .map(module -> new ModulePopularityDTO(
-                        module.getModuleCode(),
-                        module.getModuleName(),
-                        module.getEnrollments().size()
+    public long getTotalProfessors() {
+        long count = professorRepository.count();
+        log.info("Total professors: {}", count);
+        return count;
+    }
+
+    @Override
+    public long getTotalModules() {
+        long count = moduleRepository.count();
+        log.info("Total modules: {}", count);
+        return count;
+    }
+
+    @Override
+    public long getTotalEnrollments() {
+        long count = enrollmentRepository.count();
+        log.info("Total enrollments: {}", count);
+        return count;
+    }
+
+    /**
+     * Returns a map of (moduleName -> enrollmentCount).
+     * Example query in EnrollmentRepository:
+     * {@code SELECT e.module.moduleName AS moduleName, COUNT(e.id) AS enrollmentCount ...}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Map<String, Long> getPopularModules() {
+        log.info("Fetching popular modules...");
+        List<Map<String, Object>> rawData = enrollmentRepository.findPopularModules();
+        // -> Each map has keys: "moduleName" and "enrollmentCount"
+
+        // Convert raw data into a sorted map by enrollment count desc
+        // (Map<String, Long>) moduleName -> enrollmentCount
+        return rawData.stream()
+                .sorted((a, b) -> Long.compare(
+                        ((Number)b.get("enrollmentCount")).longValue(),
+                        ((Number)a.get("enrollmentCount")).longValue()
                 ))
-                .sorted(Comparator.comparingLong(ModulePopularityDTO::getEnrollmentCount).reversed())
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(
+                        e -> (String) e.get("moduleName"),
+                        e -> ((Number) e.get("enrollmentCount")).longValue(),
+                        (oldVal, newVal) -> oldVal, // merge function
+                        LinkedHashMap::new // maintain insertion order
+                ));
     }
 
+    /**
+     * Returns a map of (statusName -> count).
+     * If your repository query returns the status as an enum, we must convert with .name().
+     */
     @Override
-    public List<StudentPerformanceDTO> getStudentPerformanceReport() {
-        List<Student> students = studentRepository.findAll();
-        return students.stream()
-                .map(student -> {
-                    int totalModulesEnrolled = student.getEnrollments().size();
-                    double averagePerformance = 0.0; // Placeholder for now
+    @Transactional(readOnly = true)
+    public Map<String, Long> getEnrollmentsByStatus() {
+        log.info("Fetching enrollments by status...");
+        List<Map<String, Object>> rawData = enrollmentRepository.countEnrollmentsByStatus();
+        // -> Each map has keys: "status" (enum) and "count"
 
-                    return new StudentPerformanceDTO(
-                            student.getStudentNumber(),
-                            student.getFirstName() + " " + student.getLastName(),
-                            totalModulesEnrolled,
-                            averagePerformance
-                    );
-                })
-                .sorted(Comparator.comparingDouble(StudentPerformanceDTO::getAveragePerformance).reversed())
-                .collect(Collectors.toList());
-    }}
+        return rawData.stream()
+                .collect(Collectors.toMap(
+                        e -> ((Enrollment.EnrollmentStatus) e.get("status")).name(),
+                        e -> ((Number) e.get("count")).longValue()
+                ));
+    }
+
+    /**
+     * Returns a list of recent enrollments with:
+     *  studentName, moduleName, enrollmentDate, status
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> getRecentEnrollments() {
+        log.info("Fetching recent enrollments...");
+        List<Map<String, Object>> list = enrollmentRepository.findRecentEnrollments();
+        log.info("Recent enrollments found: {}", list.size());
+        return list;
+    }
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Professor Profile</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="profile-container">
+    <h1 th:text="${professor.firstName + ' ' + professor.lastName}"></h1>
+    <p><strong>Employee Number:</strong> <span th:text="${professor.employeeNumber}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${professor.email}"></span></p>
+    <p><strong>Department:</strong> <span th:text="${professor.department}"></span></p>
+
+    <div class="profile-actions">
+        <a th:href="@{/professors/edit/{id}(id=${professor.id})}" class="btn">Edit</a>
+        <a th:href="@{/professors/delete/{id}(id=${professor.id})}" class="btn btn-danger">Delete</a>
+    </div>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

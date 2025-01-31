@@ -2,18 +2,24 @@ package org.example.scool.models;
 
 import jakarta.persistence.*;
 import java.util.Set;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "professors")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Professor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "employee_number", unique = true, nullable = false)

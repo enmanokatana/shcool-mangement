@@ -1,38 +1,24 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professor List</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Professors</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 </head>
 <body>
-<header>
-    <nav>
-        <div class="logo">School Management</div>
-        <ul class="nav-links">
-            <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/students}">Students</a></li>
-            <li><a th:href="@{/professors}">Professors</a></li>
-            <li><a th:href="@{/modules}">Modules</a></li>
-        </ul>
-    </nav>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<main>
-    <h1>Professor List</h1>
-    <a th:href="@{/professors/add}" class="btn">Add New Professor</a>
+<main class="container">
+    <h1>Professors</h1>
+    <a href="/professors/add" class="btn btn-primary">Add Professor</a>
 
-    <!-- Success/Error Messages -->
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-    <table>
+    <table class="professors-table">
         <thead>
         <tr>
             <th>Employee Number</th>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Full Name</th>
             <th>Email</th>
             <th>Department</th>
             <th>Actions</th>
@@ -41,23 +27,26 @@
         <tbody>
         <tr th:each="professor : ${professors}">
             <td th:text="${professor.employeeNumber}"></td>
-            <td th:text="${professor.firstName}"></td>
-            <td th:text="${professor.lastName}"></td>
+            <td th:text="${professor.firstName + ' ' + professor.lastName}"></td>
             <td th:text="${professor.email}"></td>
             <td th:text="${professor.department}"></td>
             <td>
-                <a th:href="@{/professors/edit/{id}(id=${professor.id})}" class="btn">Edit</a>
-                <a th:href="@{/professors/delete/{id}(id=${professor.id})}" class="btn btn-danger">Delete</a>
+                <a th:href="@{/professors/profile/{id}(id=${professor.id})}" class="btn btn-secondary">
+                    <i class="fas fa-eye"></i> View
+                </a>
+                <a th:href="@{/professors/edit/{id}(id=${professor.id})}" class="btn btn-secondary">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a th:href="@{/professors/delete/{id}(id=${professor.id})}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
             </td>
+
         </tr>
         </tbody>
     </table>
 </main>
 
-<footer>
-    <p>&copy; 2023 School Management System</p>
-</footer>
-
-<script th:src="@{/js/scripts.js}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

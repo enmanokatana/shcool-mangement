@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body th:fragment="header">
+<header>
+  <div class="container">
+    <!-- Logo -->
+    <div class="logo">
+      <h1 class="main-title">School Management</h1>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+      <ul>
+        <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+
+        <!-- Accessible to Admin and Secretary roles -->
+        <li th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SECRETARY'')')}">
+          <a href="/students" class="nav-link">Students</a>
+        </li>
+
+        <!-- Accessible to Admin role only -->
+        <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+          <a href="/professors" class="nav-link">Teachers</a>
+        </li>
+
+        <!-- Accessible to Admin and Professor roles -->
+        <li th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''PROFESSOR'')')}">
+          <a href="/modules" class="nav-link">Modules</a>
+        </li>
+
+        <!-- Accessible to Admin and Secretary roles -->
+        <li th:if="${#authorization.expression('hasRole(''ADMIN'') or hasRole(''SECRETARY'')')}">
+          <a href="/enrollments" class="nav-link">Enrollments</a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Authentication -->
+    <div class="auth-buttons">
+      <!-- Displayed if user is authenticated -->
+      <div th:if="${#authorization.expression('isAuthenticated()')}">
+        <span>Welcome, <strong th:text="${#authentication.name}"></strong></span>
+
+        <!-- Logout Form -->
+        <form th:action="@{/logout}" method="post" class="logout-form">
+          <button type="submit" class="btn">Logout</button>
+        </form>
+      </div>
+
+      <!-- Displayed if user is not authenticated -->
+      <div th:if="${#authorization.expression('!isAuthenticated()')}">
+        <a th:href="@{/login}" class="btn">Login</a>
+      </div>
+    </div>
+  </div>
+</header>
+</body>
+</html>

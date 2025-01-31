@@ -1,65 +1,81 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Student</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Student</title>
+  <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<header>
-    <nav>
-        <div class="logo">School Management</div>
-        <ul class="nav-links">
-            <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/students}">Students</a></li>
-            <li><a th:href="@{/professors}">Professors</a></li>
-            <li><a th:href="@{/modules}">Modules</a></li>
-        </ul>
-    </nav>
-</header>
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
 
-<main>
+<!-- Content -->
+<div class="content">
+  <!-- Sidebar -->
+  <div th:replace="~{fragments/footer :: footer}"></div>
+
+  <!-- Main Content -->
+  <main>
     <h1>Edit Student</h1>
-
-    <!-- Success/Error Messages -->
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
     <form th:action="@{/students/edit/{id}(id=${student.id})}" th:object="${student}" method="post">
-        <div class="form-group">
-            <label for="studentNumber">Student Number</label>
-            <input type="text" id="studentNumber" th:field="*{studentNumber}" required>
-            <span th:if="${#fields.hasErrors('studentNumber')}" th:errors="*{studentNumber}" class="error"></span>
-        </div>
-        <div class="form-group">
-            <label for="firstName">First Name</label>
-            <input type="text" id="firstName" th:field="*{firstName}" required>
-            <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error"></span>
-        </div>
-        <div class="form-group">
-            <label for="lastName">Last Name</label>
-            <input type="text" id="lastName" th:field="*{lastName}" required>
-            <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error"></span>
-        </div>
-        <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" th:field="*{email}" required>
-            <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
-        </div>
-        <div class="form-group">
-            <label for="dateOfBirth">Date of Birth</label>
-            <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}">
-            <span th:if="${#fields.hasErrors('dateOfBirth')}" th:errors="*{dateOfBirth}" class="error"></span>
-        </div>
-        <button type="submit" class="btn">Update Student</button>
+      <!-- Student Information -->
+      <div class="form-group">
+        <label for="studentNumber">Student Number</label>
+        <input type="text" id="studentNumber" name="studentNumber" th:field="*{studentNumber}" readonly />
+      </div>
+
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required />
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" th:field="*{email}" required />
+      </div>
+
+      <div class="form-group">
+        <label for="dateOfBirth">Date of Birth</label>
+        <input type="date" id="dateOfBirth" name="dateOfBirth" th:field="*{dateOfBirth}" />
+      </div>
+
+      <!-- Contact Information -->
+      <div class="form-group">
+        <label for="phoneNumber">Phone Number</label>
+        <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" />
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address</label>
+        <textarea id="address" name="address" th:field="*{address}"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="emergencyContact">Emergency Contact</label>
+        <input type="text" id="emergencyContact" name="emergencyContact" th:field="*{emergencyContact}" />
+      </div>
+
+      <div class="form-group">
+        <label for="emergencyPhone">Emergency Phone</label>
+        <input type="text" id="emergencyPhone" name="emergencyPhone" th:field="*{emergencyPhone}" />
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button type="submit" class="btn">Save Changes</button>
+        <a href="/students" class="btn btn-secondary">Cancel</a>
+      </div>
     </form>
-</main>
+  </main>
+</div>
 
-<footer>
-    <p>&copy; 2023 School Management System</p>
-</footer>
-
-<script th:src="@{/js/scripts.js}"></script>
+<!-- Footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

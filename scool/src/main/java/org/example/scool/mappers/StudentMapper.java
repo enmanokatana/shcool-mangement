@@ -10,12 +10,15 @@ import org.mapstruct.*;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface StudentMapper {
+
     @Mapping(target = "enrollments", qualifiedByName = "mapEnrollments")
+    @Mapping(target = "profilePicture", source = "profilePicture")  // Add this mapping
     StudentDTO toDTO(Student student);
+
+    @Mapping(target = "profilePicture", source = "profilePicture")  // Ensure it's mapped when converting back
     Student toEntity(StudentDTO studentDTO);
 
     void updateEntityFromDTO(StudentDTO dto, @MappingTarget Student entity);

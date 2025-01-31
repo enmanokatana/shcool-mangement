@@ -44,7 +44,7 @@ public interface ModuleMapper {
                 enrollments.stream()
                         .map(e -> new EnrollmentDTO(
                                 e.getId(),
-                                new StudentDTO(e.getStudent().getId(), null, null, null, null, null, null, null),
+                                StudentDTO.builder().id(e.getStudent().getId()).build(),
                                 null,
                                 e.getEnrollmentDate(),
                                 e.getStatus()

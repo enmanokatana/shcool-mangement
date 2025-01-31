@@ -4,6 +4,7 @@ package org.example.scool.dtos;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class StudentDTO {
     private Long id;
 
@@ -39,4 +41,15 @@ public class StudentDTO {
 
     @Valid
     private List<EnrollmentDTO> enrollments;
+    private String phoneNumber;
+    private String address;
+    private String emergencyContact;
+
+    private String emergencyPhone;
+    private String gender;
+    private String status;
+    // In StudentDTO.java
+    private String profilePicture;
+
+
 }
