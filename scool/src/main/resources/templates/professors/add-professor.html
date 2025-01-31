@@ -1,65 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Professor</title>
-  <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <title>Add Professor</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<header>
-  <nav>
-    <div class="logo">School Management</div>
-    <ul class="nav-links">
-      <li><a th:href="@{/}">Home</a></li>
-      <li><a th:href="@{/students}">Students</a></li>
-      <li><a th:href="@{/professors}">Professors</a></li>
-      <li><a th:href="@{/modules}">Modules</a></li>
-    </ul>
-  </nav>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<main>
-  <h1>Add Professor</h1>
-
-  <!-- Success/Error Messages -->
-  <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-  <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-  <form th:action="@{/professors/add}" th:object="${professor}" method="post">
-    <div class="form-group">
-      <label for="employeeNumber">Employee Number</label>
-      <input type="text" id="employeeNumber" th:field="*{employeeNumber}" required>
-      <span th:if="${#fields.hasErrors('employeeNumber')}" th:errors="*{employeeNumber}" class="error"></span>
-    </div>
-    <div class="form-group">
-      <label for="firstName">First Name</label>
-      <input type="text" id="firstName" th:field="*{firstName}" required>
-      <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error"></span>
-    </div>
-    <div class="form-group">
-      <label for="lastName">Last Name</label>
-      <input type="text" id="lastName" th:field="*{lastName}" required>
-      <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error"></span>
-    </div>
-    <div class="form-group">
-      <label for="email">Email</label>
-      <input type="email" id="email" th:field="*{email}" required>
-      <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error"></span>
-    </div>
-    <div class="form-group">
-      <label for="department">Department</label>
-      <input type="text" id="department" th:field="*{department}" required>
-      <span th:if="${#fields.hasErrors('department')}" th:errors="*{department}" class="error"></span>
-    </div>
-    <button type="submit" class="btn">Add Professor</button>
-  </form>
+<main class="container">
+    <h1>Add Professor</h1>
+    <form th:action="@{/professors/add}" th:method="post" th:object="${professor}">
+        <div class="form-group">
+            <label for="employeeNumber">Employee Number</label>
+            <input type="text" id="employeeNumber" name="employeeNumber" th:field="*{employeeNumber}" />
+        </div>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" th:field="*{firstName}" />
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" th:field="*{lastName}" />
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" th:field="*{email}" />
+        </div>
+        <div class="form-group">
+            <label for="department">Department</label>
+            <input type="text" id="department" name="department" th:field="*{department}" />
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Add</button>
+            <a href="/professors" class="btn">Cancel</a>
+        </div>
+    </form>
 </main>
 
-<footer>
-  <p>&copy; 2023 School Management System</p>
-</footer>
-
-<script th:src="@{/js/scripts.js}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

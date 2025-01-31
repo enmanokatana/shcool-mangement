@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Dashboard</title>
+
+  <!-- Global or main styling (dark theme) -->
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- Extra dash-specific styling (see below) -->
+
+  <!-- Chart.js for the charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="dashboard-container">
+  <h1>School Management Dashboard</h1>
+
+  <!-- Counters Row -->
+  <section class="counters-row">
+    <div class="counter-card">
+      <h2>Total Students</h2>
+      <p th:text="${totalStudents}"></p>
+    </div>
+    <div class="counter-card">
+      <h2>Total Professors</h2>
+      <p th:text="${totalProfessors}"></p>
+    </div>
+    <div class="counter-card">
+      <h2>Total Modules</h2>
+      <p th:text="${totalModules}"></p>
+    </div>
+    <div class="counter-card">
+      <h2>Total Enrollments</h2>
+      <p th:text="${totalEnrollments}"></p>
+    </div>
+  </section>
+
+  <!-- Charts Row -->
+  <section class="charts-row">
+    <div class="chart-box">
+      <h3>Popular Modules</h3>
+      <canvas id="modulesChart"></canvas>
+    </div>
+
+    <div class="chart-box">
+      <h3>Enrollments by Status</h3>
+      <canvas id="statusChart"></canvas>
+    </div>
+  </section>
+
+  <!-- Recent Enrollments Table -->
+  <section class="recent-enrollments">
+    <h3>Recent Enrollments</h3>
+    <table>
+      <thead>
+      <tr>
+        <th>Student</th>
+        <th>Module</th>
+        <th>Date</th>
+        <th>Status</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="row : ${recentEnrollments}">
+        <td th:text="${row.studentName}">Student Name</td>
+        <td th:text="${row.moduleName}">Module Name</td>
+        <td th:text="${row.enrollmentDate}">Date</td>
+        <td th:text="${row.status}">Status</td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(recentEnrollments)}">
+        <td colspan="4">No recent enrollments found.</td>
+      </tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+
+<!-- Initialize data as inline JavaScript -->
+<script th:inline="javascript">
+  //<![CDATA[
+  let modulesData = [[${popularModules}]];
+  let statusData = [[${enrollmentsByStatus}]];
+
+  // Convert to arrays
+  const modLabels = Object.keys(modulesData);
+  const modValues = Object.values(modulesData);
+
+  const statusLabels = Object.keys(statusData);
+  const statusValues = Object.values(statusData);
+
+  // Popular Modules Chart
+  new Chart(document.getElementById('modulesChart'), {
+    type: 'bar',
+    data: {
+      labels: modLabels,
+      datasets: [{
+        label: 'Enrollments',
+        data: modValues,
+        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // Enrollments by Status Chart
+  new Chart(document.getElementById('statusChart'), {
+    type: 'pie',
+    data: {
+      labels: statusLabels,
+      datasets: [{
+        data: statusValues,
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.7)',  // ACTIVE?
+          'rgba(255, 99, 132, 0.7)', // DROPPED?
+          'rgba(255, 206, 86, 0.7)'  // COMPLETED?
+        ]
+      }]
+    },
+    options: {
+      responsive: true
+    }
+  });
+  //]]>
+</script>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

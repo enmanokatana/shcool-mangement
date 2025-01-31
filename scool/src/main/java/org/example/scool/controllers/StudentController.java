@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
@@ -30,6 +31,32 @@ public class StudentController {
             model.addAttribute("errorMessage", "Failed to fetch students. Please try again later.");
             return "students/list";
         }
+    }
+
+    @GetMapping("/profile/{id}")
+    public String viewProfile(@PathVariable Long id, Model model) {
+        try {
+            StudentDTO student = studentService.getStudentById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Student not found with id: " + id));
+            model.addAttribute("student", student);
+            return "students/profile";
+        } catch (EntityNotFoundException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "redirect:/students";
+        }
+    }
+
+    @PostMapping("/profile/{id}/upload-photo")
+    public String uploadProfilePhoto(@PathVariable Long id,
+                                     @RequestParam("photo") MultipartFile photo,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            studentService.updateProfilePhoto(id, photo);
+            redirectAttributes.addFlashAttribute("successMessage", "Profile photo updated successfully!");
+        } catch (Exception ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Failed to update profile photo.");
+        }
+        return "redirect:/students/profile/" + id;
     }
 
     @GetMapping("/add")
@@ -103,7 +130,7 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         } catch (IllegalOperationException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        } catch (DataDeletionException ex) {
+        } catch (DataDeletionException | DataDeleteException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete student. Please try again later.");
         }
         return "redirect:/students";

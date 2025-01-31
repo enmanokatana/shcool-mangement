@@ -60,8 +60,7 @@ public class ModuleController {
             return "redirect:/modules";
         } catch (DuplicateModuleException ex) {
             result.rejectValue("moduleCode", "error.module", ex.getMessage());
-            List<ProfessorDTO> professors = professorService.getAllProfessors();
-            model.addAttribute("professors", professors);
+            model.addAttribute("professors", professorService.getAllProfessors());
             return "modules/add-module";
         } catch (ModuleCreationException ex) {
             redirectAttributes.addFlashAttribute("errorMessage", "Failed to create module. Please try again later.");
@@ -125,4 +124,5 @@ public class ModuleController {
         }
         return "redirect:/modules";
     }
+
 }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<!-- Header -->
+<div th:replace="~{fragments/header :: header}"></div>
+
+<!-- Hero Section -->
+<section class="profile-hero">
+  <div class="hero-container">
+    <div class="profile-photo-large">
+      <img th:src="@{/uploads/profile-photos/{photo}(photo=${student.profilePicture})}" alt="Profile Photo" />
+    </div>
+    <div class="hero-info">
+      <h1 th:text="${student.firstName + ' ' + student.lastName}"></h1>
+      <p th:text="'Student Number: ' + ${student.studentNumber}"></p>
+      <p th:text="${student.email}"></p>
+      <div class="profile-actions">
+        <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn">Edit Profile</a>
+        <a th:href="@{/students/delete/{id}(id=${student.id})}" class="btn btn-danger">Delete Profile</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Main Content with Tabs -->
+<div class="tabs-container">
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('info')">General Info</button>
+    <button class="tab-button" onclick="showTab('contact')">Contact Info</button>
+    <button class="tab-button" onclick="showTab('emergency')">Emergency Contact</button>
+  </div>
+
+  <!-- Tab Content -->
+  <div id="info" class="tab-content active">
+    <h2>General Information</h2>
+    <p><strong>Date of Birth:</strong> <span th:text="${student.dateOfBirth}"></span></p>
+    <p><strong>Enrollment Date:</strong> <span th:text="${student.enrollmentDate}"></span></p>
+    <p><strong>Status:</strong> <span th:text="${student.status}"></span></p>
+  </div>
+
+  <div id="contact" class="tab-content">
+    <h2>Contact Information</h2>
+    <p><strong>Phone Number:</strong> <span th:text="${student.phoneNumber}"></span></p>
+    <p><strong>Address:</strong> <span th:text="${student.address}"></span></p>
+  </div>
+
+  <div id="emergency" class="tab-content">
+    <h2>Emergency Contact</h2>
+    <p><strong>Contact Name:</strong> <span th:text="${student.emergencyContact}"></span></p>
+    <p><strong>Contact Phone:</strong> <span th:text="${student.emergencyPhone}"></span></p>
+  </div>
+</div>
+
+<!-- Footer -->
+
+<script>
+  function showTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
+  }
+</script>
+</body>
+</html>

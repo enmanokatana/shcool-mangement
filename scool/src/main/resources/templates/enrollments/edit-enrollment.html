@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Enrollment</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="container">
+    <h1>Edit Enrollment</h1>
+
+    <form th:action="@{/enrollments/edit/{id}(id=${enrollment.id})}" th:method="post" th:object="${enrollment}" class="form">
+        <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" name="status" th:field="*{status}">
+                <option value="ACTIVE" th:selected="${enrollment.status == 'ACTIVE'}">Active</option>
+                <option value="DROPPED" th:selected="${enrollment.status == 'DROPPED'}">Dropped</option>
+                <option value="COMPLETED" th:selected="${enrollment.status == 'COMPLETED'}">Completed</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Update
+        </button>
+        <a href="/enrollments" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </form>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

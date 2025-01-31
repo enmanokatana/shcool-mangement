@@ -31,6 +31,19 @@ public class ProfessorController {
             return "professors/list";
         }
     }
+    @GetMapping("/profile/{id}")
+    public String viewProfessorProfile(@PathVariable Long id, Model model) {
+        try {
+            ProfessorDTO professorDTO = professorService.getProfessorById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Professor not found with id: " + id));
+            model.addAttribute("professor", professorDTO);
+            return "professors/view-professor";
+        } catch (EntityNotFoundException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
+            return "redirect:/professors";
+        }
+    }
+
 
     @GetMapping("/add")
     public String showAddProfessorForm(Model model) {

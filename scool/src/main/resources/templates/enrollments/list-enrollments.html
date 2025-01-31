@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Enrollments</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<main class="container">
+  <h1>Enrollments</h1>
+
+  <!-- Filter form by student and module -->
+  <form method="get" action="/enrollments" class="filter-form">
+    <div class="form-group">
+      <label for="studentId">Filter by Student:</label>
+      <select id="studentId" name="studentId">
+        <option value="">-- Select Student --</option>
+        <option th:each="student : ${students}" th:value="${student.id}" th:text="${student.firstName + ' ' + student.lastName}"></option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="moduleId">Filter by Module:</label>
+      <select id="moduleId" name="moduleId">
+        <option value="">-- Select Module --</option>
+        <option th:each="module : ${modules}" th:value="${module.id}" th:text="${module.moduleName}"></option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+  </form>
+
+  <!-- Button to add new enrollment -->
+  <div class="add-enrollment">
+    <a href="/enrollments/add" class="btn btn-secondary">
+      <i class="fas fa-plus"></i> New Enrollment
+    </a>
+  </div>
+
+  <!-- Enrollment data table -->
+  <table class="data-table">
+    <thead>
+    <tr>
+      <th>Student</th>
+      <th>Module</th>
+      <th>Enrollment Date</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="enrollment : ${enrollments}">
+      <td th:text="${enrollment.student.firstName + ' ' + enrollment.student.lastName}"></td>
+      <td th:text="${enrollment.module.moduleName}"></td>
+      <td th:text="${enrollment.enrollmentDate}"></td>
+      <td th:text="${enrollment.status}"></td>
+      <td>
+        <a th:href="@{/enrollments/edit/{id}(id=${enrollment.id})}" class="btn btn-secondary">
+          <i class="fas fa-edit"></i> Edit
+        </a>
+        <a th:href="@{/enrollments/cancel/{id}(id=${enrollment.id})}" class="btn btn-danger">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+      </td>
+    </tr>
+    <tr th:if="${enrollments.isEmpty()}">
+      <td colspan="5">No enrollments found.</td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

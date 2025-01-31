@@ -1,65 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Module</title>
-    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-<header>
-    <nav>
-        <div class="logo">School Management</div>
-        <ul class="nav-links">
-            <li><a th:href="@{/}">Home</a></li>
-            <li><a th:href="@{/students}">Students</a></li>
-            <li><a th:href="@{/professors}">Professors</a></li>
-            <li><a th:href="@{/modules}">Modules</a></li>
-        </ul>
-    </nav>
-</header>
+<div th:replace="~{fragments/header :: header}"></div>
 
-<main>
+<main class="container">
     <h1>Edit Module</h1>
-
-    <!-- Success/Error Messages -->
-    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
-    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
-
-    <form th:action="@{/modules/edit/{id}(id=${module.id})}" th:object="${module}" method="post">
+    <form th:action="@{/modules/edit/{id}(id=${module.id})}" th:method="post" th:object="${module}">
         <div class="form-group">
             <label for="moduleCode">Module Code</label>
-            <input type="text" id="moduleCode" th:field="*{moduleCode}" required>
-            <span th:if="${#fields.hasErrors('moduleCode')}" th:errors="*{moduleCode}" class="error"></span>
+            <input type="text" id="moduleCode" name="moduleCode" th:field="*{moduleCode}" readonly />
         </div>
         <div class="form-group">
             <label for="moduleName">Module Name</label>
-            <input type="text" id="moduleName" th:field="*{moduleName}" required>
-            <span th:if="${#fields.hasErrors('moduleName')}" th:errors="*{moduleName}" class="error"></span>
+            <input type="text" id="moduleName" name="moduleName" th:field="*{moduleName}" />
         </div>
         <div class="form-group">
             <label for="description">Description</label>
-            <textarea id="description" th:field="*{description}"></textarea>
-            <span th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error"></span>
+            <textarea id="description" name="description" th:field="*{description}"></textarea>
         </div>
         <div class="form-group">
-            <label for="professor">Professor</label>
-            <select id="professor" th:field="*{professor}">
-                <option value="">Select Professor</option>
-                <option th:each="professor : ${professors}"
-                        th:value="${professor.id}"
-                        th:text="${professor.firstName + ' ' + professor.lastName}"></option>
+            <label for="professor">Assign Professor</label>
+            <select id="professor" name="professor.id" th:field="*{professor.id}">
+                <option value="" th:text="'-- Select Professor --'"></option>
+                <option th:each="prof : ${professors}" th:value="${prof.id}" th:text="${prof.firstName + ' ' + prof.lastName}" th:if="${prof.id == module.professor?.id}" selected></option>
             </select>
-            <span th:if="${#fields.hasErrors('professor')}" th:errors="*{professor}" class="error"></span>
         </div>
-        <button type="submit" class="btn">Update Module</button>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Update Module</button>
+            <a href="/modules" class="btn">Cancel</a>
+        </div>
     </form>
 </main>
 
-<footer>
-    <p>&copy; 2023 School Management System</p>
-</footer>
-
-<script th:src="@{/js/scripts.js}"></script>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -31,6 +33,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentMapper enrollmentMapper;
 
     @Override
+    @Transactional
     public EnrollmentDTO createEnrollment(EnrollmentDTO enrollmentDTO) {
         try {
             Student student = studentRepository.findById(enrollmentDTO.getStudent().getId())
@@ -71,18 +74,59 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollmentRepository.save(enrollment);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<EnrollmentDTO> getEnrollmentsByStudent(Long studentId) {
-        return null;
+    public List<EnrollmentDTO> getAllEnrollments() {
+        List<Enrollment> enrollments = enrollmentRepository.findAll();
+        return enrollments.stream()
+                .map(enrollmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+    @Transactional(readOnly = true)
+    @Override
+    public List<EnrollmentDTO> getEnrollmentsByStudentAndModule(Long studentId, Long moduleId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByStudentIdAndModuleId(studentId, moduleId);
+        return enrollments.stream()
+                .map(enrollmentMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<EnrollmentDTO> getEnrollmentsByStudent(Long studentId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByStudentId(studentId);
+        return enrollments.stream()
+                .map(enrollmentMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<EnrollmentDTO> getEnrollmentsByModule(Long moduleId) {
-        return null;
+        List<Enrollment> enrollments = enrollmentRepository.findByModuleId(moduleId);
+        return enrollments.stream()
+                .map(enrollmentMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     public long countActiveEnrollments() {
         return 0;
     }
+
+    @Override
+    public Optional<EnrollmentDTO> getEnrollmentById(Long id) {
+        return enrollmentRepository.findById(id)
+                .map(enrollmentMapper::toDTO);
+    }
+
+    @Override
+    public void updateEnrollment(Long id, EnrollmentDTO enrollmentDTO) {
+        Enrollment enrollment = enrollmentRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Enrollment not found with id: " + id));
+
+        enrollment.setStatus(enrollmentDTO.getStatus());
+        enrollmentRepository.save(enrollment);
+    }
+
 }

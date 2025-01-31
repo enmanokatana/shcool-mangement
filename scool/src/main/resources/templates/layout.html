@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title layout:title-pattern="My App :: ${title}">My App</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<!-- Header -->
+<header>
+  <div class="container">
+    <img src="/images/logo.png" alt="Logo" class="logo" />
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main layout:fragment="content">
+  <!-- Default content -->
+  <p>This is default content. Replace this in child templates.</p>
+</main>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <p>&copy; 2025 MySpringApp. All rights reserved.</p>
+  </div>
+</footer>
+</body>
+</html>
